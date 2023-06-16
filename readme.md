@@ -76,6 +76,9 @@ This repository provides a step-by-step guide to set up an API platform using Sy
     bin/console doctrine:migrations:migrate
     ```
 
+## Run Fake data
+php bin/console  doctrine:fixtures:load
+
 ## Run App
  ```bash
     symfony server:start
