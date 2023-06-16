@@ -79,7 +79,4 @@ This repository provides a step-by-step guide to set up an API platform using Sy
 ## Run App
  ```bash
     symfony server:start
-    
-![img.png](https://www.awesomescreenshot.com/image/40811294?key=182d6986d9b5e0d89302101be6535f16)
 
---
