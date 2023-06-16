@@ -77,7 +77,9 @@ This repository provides a step-by-step guide to set up an API platform using Sy
     ```
 
 ## Run Fake data
-php bin/console  doctrine:fixtures:load
+   ```bash 
+   php bin/console  doctrine:fixtures:load
+   ```
 
 ## Run App
  ```bash
