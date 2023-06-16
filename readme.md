@@ -80,6 +80,6 @@ This repository provides a step-by-step guide to set up an API platform using Sy
  ```bash
     symfony server:start
     
-
+![img.png](img.png)
 
 
