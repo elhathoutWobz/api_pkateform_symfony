@@ -86,4 +86,8 @@ This repository provides a step-by-step guide to set up an API platform using Sy
     symfony server:start
 
 go to =>http://127.0.0.1:8000/api
-
+ ```
+## Run testUnit
+ ```bash
+ bin/phpunit
+ ```
