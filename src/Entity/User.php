@@ -24,7 +24,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 //denormalization = json->array_php->objet(entity)
 #[ApiResource(
    operations: [
-        new Get(),
+        new Get(
+
+        ),
         new GetCollection(),
         new Post(),
         new Put(),
@@ -45,7 +47,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     use ResourceId;
     use Timestapable;
     #[ORM\Column(length: 180, unique: true)]
-    #[Groups(['user:read','user:write'])]
+    #[Groups(['user:read','user:write','article:read'])]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -59,7 +61,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Article::class, orphanRemoval: true)]
-
+    #[Groups(['user:read'])]
     private Collection $articles;
 
     public function __construct()

@@ -94,7 +94,6 @@ go to =>http://127.0.0.1:8000/api
 ## Error in Groups of serialization :
  ```bash
  bin/console cache:clear
-
  ```
 ## normalizationContext vs denormalizationContext:
 

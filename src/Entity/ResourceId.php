@@ -9,7 +9,7 @@ Trait ResourceId{
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['user:read'])]
+    #[Groups(['user:read','article:read'])]
     private ?int $id = null;
 
     /**
