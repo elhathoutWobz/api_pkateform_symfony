@@ -96,15 +96,11 @@ go to =>http://127.0.0.1:8000/api
  bin/console cache:clear
 
  ```
-## Explain diff between normalizationContext vs denormalizationContext
+##  normalizationContext vs denormalizationContext
 normalizationContext:['groups'=>['user:read']]=> indicating that only properties annotated with this group should be included in the normalized output(get/getcollection)
 ex:
 #[Groups(['user:write'])]
-{
-
-"email": "ypouros@hotmail.com",
-
-}
+{"email": "ypouros@hotmail.com", }
 -------------------------------------
 
 denormalizationContext:['groups'=>['user:write']]=>when deserializing input data. (post/put/patch)
