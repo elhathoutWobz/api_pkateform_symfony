@@ -1,23 +1,51 @@
 <?php
 
 namespace App\Entity;
-
+use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-#[ApiResource]
+//normalization = objet(entity) ->array_php->json
+//denormalization = json->array_php->objet(entity)
+#[ApiResource(
+   operations: [
+        new Get(),
+        new GetCollection(),
+        new Post(),
+        new Put(),
+       new Delete(),
+       new Patch()
+    ],
+    normalizationContext:[
+        'groups'=>['user:read']
+    ],
+    denormalizationContext:[
+        'groups'=>['user:write']
+    ]
+)]
+
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+
     use ResourceId;
     use Timestapable;
     #[ORM\Column(length: 180, unique: true)]
+    #[Groups(['user:read','user:write'])]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -27,9 +55,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Groups(['user:read'])]
     private ?string $password = null;
 
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Article::class, orphanRemoval: true)]
+
     private Collection $articles;
 
     public function __construct()

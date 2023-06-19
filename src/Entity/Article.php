@@ -6,9 +6,11 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ArticleRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 #[ApiResource]
+
 class Article
 {
  use ResourceId;
@@ -20,9 +22,11 @@ class Article
         $this->createdAt = new \DateTimeImmutable();
     }
     #[ORM\Column(length: 255)]
+    #[Groups(['read:collection'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['read:collection'])]
     private ?string $content = null;
 
     #[ORM\ManyToOne(inversedBy: 'articles')]

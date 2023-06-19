@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 trait Timestapable
 {
@@ -10,14 +11,17 @@ trait Timestapable
      * @var \DateTimeInterface|null
      */
     #[ORM\Column(type:"datetime")]
+
     private \DateTimeInterface $createdAt;
 
     /**
      * @var \DateTimeInterface|null
      */
     #[ORM\Column(type:"datetime",nullable: true)]
-    private ?\DateTimeInterface $updatedAt;
 
+    private ?\DateTimeInterface $updatedAt;
+    //groups for methods
+    #[Groups(['user:read'])]
     public function getCreatedAt(): \DateTimeInterface
     {
         return $this->createdAt;
