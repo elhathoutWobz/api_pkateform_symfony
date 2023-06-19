@@ -31,7 +31,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new Post(),
         new Put(),
         new Delete(),
-        new Patch()
+        new Patch(),
+
     ],
 
 )]

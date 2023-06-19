@@ -9,13 +9,16 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Controller\UserPublishController;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use http\Url;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints\Length;
 
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -26,19 +29,43 @@ use Symfony\Component\Serializer\Annotation\Groups;
    operations: [
         new Get(
 
+            normalizationContext:[
+                'groups'=>['user:read']
+            ],
+            denormalizationContext:[
+                'groups'=>['user:write']
+            ],
         ),
         new GetCollection(),
-        new Post(),
-        new Put(),
+        new Post(
+            normalizationContext: [
+                'groups'=>['user:read']
+            ],
+            denormalizationContext: [
+                'groups'=>['user:write']
+            ],
+        validationContext:[
+                'groups'=>['user:create']
+            ]
+        ),
+            new Put(
+                normalizationContext: [
+                    'groups'=>['user:read']
+                ],
+                denormalizationContext: [
+                    'groups'=>['user:write']
+
+                ]
+            ),
        new Delete(),
-       new Patch()
+       new Patch(),
+     /*  new Post(
+           name: 'publish',
+           uriTemplate: '/users/{id}/publish',
+           controller:UserPublishController::class
+       )*/
     ],
-    normalizationContext:[
-        'groups'=>['user:read']
-    ],
-    denormalizationContext:[
-        'groups'=>['user:write']
-    ]
+
 )]
 
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -57,12 +84,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
-    #[Groups(['user:read'])]
+    #[
+        Groups(['user:read','user:write']),
+        Length(min: 8,groups: ['user:create'])
+
+    ]
     private ?string $password = null;
 
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Article::class, orphanRemoval: true)]
     #[Groups(['user:read'])]
     private Collection $articles;
+
+    #[ORM\Column]
+    private ?bool $published = null;
 
     public function __construct()
     {
@@ -163,6 +197,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $article->setAuthor(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isPublished(): ?bool
+    {
+        return $this->published;
+    }
+
+    public function setPublished(bool $published): static
+    {
+        $this->published = $published;
 
         return $this;
     }
