@@ -12,6 +12,7 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Controller\CreateUserPublicationController;
+use App\Controller\MeController;
 use App\Controller\UserPublishController;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -88,6 +89,14 @@ use Symfony\Component\Validator\Constraints\Length;
 
 
           name: 'publish'
+       ),
+       new GetCollection(
+        uriTemplate: '/me',
+           controller: MeController::class,
+           paginationEnabled: false,
+           security: true,
+           read: false,
+           name: 'me'
        )
     ],
 
