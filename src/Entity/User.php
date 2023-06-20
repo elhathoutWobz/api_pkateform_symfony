@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiProperty;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -9,6 +11,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Controller\CreateUserPublicationController;
 use App\Controller\UserPublishController;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -28,7 +31,6 @@ use Symfony\Component\Validator\Constraints\Length;
 #[ApiResource(
    operations: [
         new Get(
-
             normalizationContext:[
                 'groups'=>['user:read']
             ],
@@ -36,7 +38,17 @@ use Symfony\Component\Validator\Constraints\Length;
                 'groups'=>['user:write']
             ],
         ),
-        new GetCollection(),
+        new GetCollection(
+            normalizationContext:[
+                'groups'=>['user:read']
+            ],
+            denormalizationContext:[
+                'groups'=>['user:write']
+            ],
+            paginationItemsPerPage: 2,
+            paginationMaximumItemsPerPage: 2,
+            paginationClientItemsPerPage: true
+        ),
         new Post(
             normalizationContext: [
                 'groups'=>['user:read']
@@ -59,15 +71,29 @@ use Symfony\Component\Validator\Constraints\Length;
             ),
        new Delete(),
        new Patch(),
-     /*  new Post(
-           name: 'publish',
+      new Post(
            uriTemplate: '/users/{id}/publish',
-           controller:UserPublishController::class
-       )*/
+          controller: CreateUserPublicationController::class,
+          normalizationContext: [
+              'groups'=>['user:read']
+          ],
+          denormalizationContext: [
+              'groups'=>['user:write']
+
+          ],
+            //object not persist in db
+           // write: false,
+           //object not get from db
+          //read: false,
+
+
+          name: 'publish'
+       )
     ],
 
 )]
-
+//add filtres usinf class of orm
+#[ApiFilter(SearchFilter::class,properties: ['id' => 'exact','email'=>'partial'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
 
@@ -96,6 +122,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $articles;
 
     #[ORM\Column]
+    #[Groups(['user:read','user:write'])]
     private ?bool $published = null;
 
     public function __construct()
